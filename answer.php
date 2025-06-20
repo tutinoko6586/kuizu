@@ -138,6 +138,17 @@ for ($i = 1; $i <= 10; $i++) {
         .close-btn:hover {
             background-color: #45a049;
         }
+        .time-date{
+            text-align: left;
+            margin: 0 0 10px;
+        }
+        #board{
+            margin: 50px 0;
+        }
+        .time-date:nth-child(2) {
+            margin : 0;
+            padding: 0;
+        }
     </style>
     <script>
         // モーダルを表示する関数
@@ -227,9 +238,9 @@ for ($i = 1; $i <= 10; $i++) {
     <div id="board"></div>
 
     <script>
-        // 投稿フォーム送信イベント
+        // 投稿処理
         document.getElementById('postForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // ページ遷移を防ぐ
+            e.preventDefault();
             const formData = new FormData(this);
 
             fetch('board-output.php', {
@@ -238,12 +249,12 @@ for ($i = 1; $i <= 10; $i++) {
             })
             .then(res => res.text())
             .then(html => {
-                document.getElementById('board').innerHTML = html; // 更新
-                document.getElementById('message').value = ''; // 入力欄リセット
+                document.getElementById('board').innerHTML = html;
+                document.getElementById('message').value = '';
             });
         });
 
-        // 初回読み込み時にメッセージ表示
+        // 初回読み込み
         window.addEventListener('load', () => {
             fetch('board-output.php')
             .then(res => res.text())
@@ -252,28 +263,6 @@ for ($i = 1; $i <= 10; $i++) {
             });
         });
     </script>
-<?php
-$file = 'board.txt';
-
-// 既存データ取得
-$board = [];
-if (file_exists($file)) {
-    $board = json_decode(file_get_contents($file), true);
-    if (!is_array($board)) $board = [];
-}
-
-// メッセージがPOSTされていれば追加
-if (!empty($_POST['message'])) {
-    $message = htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8');
-    $board[] = $message;
-    file_put_contents($file, json_encode($board, JSON_UNESCAPED_UNICODE));
-}
-
-// 出力
-foreach ($board as $msg) {
-    echo '<p>', $msg, '</p><hr>';
-}
-?>
 
 </body>
 </html>
