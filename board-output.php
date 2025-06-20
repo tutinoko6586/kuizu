@@ -1,22 +1,25 @@
 <?php
-$file = 'board.txt';
+require 'db.php';
+date_default_timezone_set('Asia/Tokyo');
 
-// 既存データ取得
-$board = [];
-if (file_exists($file)) {
-    $board = json_decode(file_get_contents($file), true);
-    if (!is_array($board)) $board = [];
-}
-
-// メッセージがPOSTされていれば追加
+// 投稿処理
 if (!empty($_POST['message'])) {
     $message = htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8');
-    $board[] = $message;
-    file_put_contents($file, json_encode($board, JSON_UNESCAPED_UNICODE));
+    $datetime = date('Y-m-d H:i:s');
+
+    $stmt = $pdo->prepare('INSERT INTO board (message, datetime) VALUES (?, ?)');
+    $stmt->execute([$message, $datetime]);
 }
 
 // 出力
-foreach ($board as $msg) {
-    echo '<p>', $msg, '</p><hr>';
+$stmt = $pdo->query('SELECT * FROM board ORDER BY id DESC');
+$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($posts as $post) {
+    $datetime = htmlspecialchars($post['datetime'], ENT_QUOTES, 'UTF-8');
+    $message  = htmlspecialchars($post['message'], ENT_QUOTES, 'UTF-8');
+
+    echo '<p class="time-date">' . $datetime . '</p>';
+    echo '<p class="time-date">' . $message . '</p><hr>';
 }
 ?>
