@@ -259,7 +259,9 @@ shuffle($question10);
             <input type="radio" name="question10" value="" checked="checked" style="display:none;">
         </div>
         <input type="hidden" name="answer10" value="<?php echo $answer10; ?>">
-
+        <!-- quiz-container内のform開始タグの直後あたりに追加 -->
+        <h2>ペンネームを入力してください</h2>
+        <input type="text" name="pen_name" required style="width: 80%; padding: 10px; font-size: 16px;">
         <br>
         <button type="submit" class="submit-btn">送信</button>
         <p class="log"></p>
